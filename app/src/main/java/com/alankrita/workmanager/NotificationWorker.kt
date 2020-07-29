@@ -20,7 +20,9 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val content : String = inputData.getString(MainActivity.KEY_WORK_CONTENT).toString()
         showNotification(title, content)
 
-        val data : Data = Data.Builder().putString(KEY_OUTPUT_TEXT, "Work finished!").build()
+        val data : Data = Data.Builder()
+            .putString(KEY_OUTPUT_TEXT, "Work finished!")
+            .build()
         return Result.success(data)
     }
 

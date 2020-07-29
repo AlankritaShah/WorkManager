@@ -3,6 +3,7 @@ package com.alankrita.workmanager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.Observer
+import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
@@ -22,12 +23,18 @@ class MainActivity : AppCompatActivity() {
 
         workManager = WorkManager.getInstance(applicationContext)
 
-        val data : Data = Data.Builder().putString(KEY_WORK_CONTENT, "I am the content of notification")
+        val data : Data = Data.Builder()
+            .putString(KEY_WORK_CONTENT, "I am the content of notification")
             .putString(KEY_WORK_TITLE, "Work Manager Test")
+            .build()
+
+        val constraints : Constraints = Constraints.Builder()
+            .setRequiresBatteryNotLow(true)
             .build()
 
         val request : OneTimeWorkRequest = OneTimeWorkRequest.Builder(NotificationWorker::class.java)
             .setInputData(data)
+            .setConstraints(constraints)
             .build()
 
         notify_button.setOnClickListener {
