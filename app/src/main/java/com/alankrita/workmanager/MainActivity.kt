@@ -1,0 +1,49 @@
+package com.alankrita.workmanager
+
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import androidx.lifecycle.Observer
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import kotlinx.android.synthetic.main.activity_main.*
+
+class MainActivity : AppCompatActivity() {
+    private lateinit var workManager : WorkManager
+
+    companion object {
+        const val KEY_WORK_CONTENT : String = "content_work"
+        const val KEY_WORK_TITLE : String = "title_work"
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        workManager = WorkManager.getInstance(applicationContext)
+
+        val data : Data = Data.Builder().putString(KEY_WORK_CONTENT, "I am the content of notification")
+            .putString(KEY_WORK_TITLE, "Work Manager Test")
+            .build()
+
+        val request : OneTimeWorkRequest = OneTimeWorkRequest.Builder(NotificationWorker::class.java)
+            .setInputData(data)
+            .build()
+
+        notify_button.setOnClickListener {
+            workManager.enqueue(request)
+        }
+
+        workManager.getWorkInfoByIdLiveData(request.id)
+            .observe(this, Observer {workInfo ->
+                if(workInfo != null) {
+                    val status: String = workInfo.state.name
+                    status_textview.append(status + "\n")
+
+                    if(workInfo.state.isFinished) {
+                        status_textview.append("\n" + workInfo.outputData + "\n")
+                    }
+                }
+            })
+    }
+}
