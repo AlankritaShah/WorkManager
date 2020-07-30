@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
                     status_textview.append(status + "\n")
 
                     if(workInfo.state.isFinished) {
-                        status_textview.append("\n" + workInfo.outputData + "\n")
+                        status_textview.append("\n" + workInfo.outputData.getString(NotificationWorker.KEY_OUTPUT_TEXT) + "\n")
                     }
                 }
             })
